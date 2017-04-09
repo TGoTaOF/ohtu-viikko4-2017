@@ -70,6 +70,53 @@ public class Stepdefs {
         logInWith(username, password);
     }
     
+    @When("valid username \"([^\"]*)\", password \"([^\"]*)\" and password confirmation \"([^\"]*)\" are given$")
+    public void creation_with_valid_information(String username, String password, String confPassword) throws Throwable {
+        createAccount(username, password, confPassword);
+    }
+    
+    @Then("new user is created$")
+    public void creation_succesful() throws Throwable {
+        pageHasContent("Welcome to Ohtu Application!");
+    }
+    
+    @When("short username \"([^\"]*)\", password \"([^\"]*)\" and password confirmation \"([^\"]*)\" are given$")
+    public void creation_with_short_username(String username, String password, String confPassword) throws Throwable {
+        createAccount(username, password, confPassword);
+    }
+    
+    @Then("user is not created and error \"([^\"]*)\" is reported$")
+    public void invalid_information_was_entered(String errorMsg) {
+        pageHasContent(errorMsg);
+    }
+    
+    @When("valid username \"([^\"]*)\" and short password \"([^\"]*)\" and password confirmation \"([^\"]*)\" are given$")
+    public void creation_with_short_password(String username, String password, String confPassword) throws Throwable {
+        createAccount(username, password, confPassword);
+    }
+    
+    @When("valid username \"([^\"]*)\" and invalid password \"([^\"]*)\" and password confirmation \"([^\"]*)\" are given$")
+    public void creation_with_invalid_username(String username, String password, String confPassword) throws Throwable {
+        createAccount(username, password, confPassword);
+    }
+    
+    @When("already in use username \"([^\"]*)\", password \"([^\"]*)\" and password confirmation \"([^\"]*)\" are given$")
+    public void creation_with_already_in_use_username(String username, String password, String confPassword) throws Throwable {
+        createAccount(username, password, confPassword);
+    }
+    
+    @When("valid username \"([^\"]*)\" and valid password \"([^\"]*)\" and not matching password confirmation \"([^\"]*)\" are given$")
+    public void creation_with_wrong_password_confirmation(String username, String password, String confPassword) throws Throwable {
+        createAccount(username, password, confPassword);
+    }
+    
+    @Given("^new user is selected$")
+    public void new_user_is_selected() throws Throwable {
+        driver.get(baseUrl);
+        WebElement element = driver.findElement(By.linkText("register new user"));       
+        element.click(); 
+    }
+    
     @After
     public void tearDown(){
         driver.quit();
@@ -89,5 +136,17 @@ public class Stepdefs {
         element.sendKeys(password);
         element = driver.findElement(By.name("login"));
         element.submit();  
-    } 
+    }
+    
+    private void createAccount(String username, String password, String confPassword) {
+        assertTrue(driver.getPageSource().contains("Create username and give password"));
+        WebElement element = driver.findElement(By.name("username"));
+        element.sendKeys(username);
+        element = driver.findElement(By.name("password"));
+        element.sendKeys(password);
+        element = driver.findElement(By.name("passwordConfirmation"));
+        element.sendKeys(confPassword);
+        element = driver.findElement(By.name("signup"));
+        element.submit(); 
+    }
 }
